@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from datetime import date
 
@@ -18,31 +18,56 @@ class Card(db.Model):
     status = db.Column(db.String)
     priority = db.Column(db.String)
 
+
 # Define a custom CLI (terminal) command
 @app.cli.command('create')
 def create_db():
     db.create_all()
-    print('Tables Created')
+    print("Tables created")
 
 @app.cli.command('drop')
 def drop_db():
     db.drop_all()
-    print('Tables dropped')
+    print("Tables dropped")
 
 @app.cli.command('seed')
 def seed_db():
-    card = Card(
-        title = 'Start the project',
-        description = 'Stage 1 - Creating the database',
-        status = 'To Do',
-        priority = 'High',
-        date = date.today()
-    )
+    cards = [
+        Card(
+            title = 'Start the project',
+            description = 'Stage 1 - Create the database',
+            status = 'To Do',
+            priority = 'High',
+            date = date.today()
+        ),
+        Card(
+            title = "SQLAlchemy",
+            description = "Stage 2 - Integrate ORM",
+            status = "Ongoing",
+            priority = "High",
+            date = date.today()
+        ),
+        Card(
+            title = "ORM Queries",
+            description = "Stage 3 - Implement several queries",
+            status = "Ongoing",
+            priority = "Medium",
+            date = date.today()
+        ),
+        Card(
+            title = "Marshmallow",
+            description = "Stage 4 - Implement Marshmallow to jsonify models",
+            status = "Ongoing",
+            priority = "Medium",
+            date = date.today()
+        )
+    ]
 
-    db.session.add(card)
+    db.session.add_all(cards)
     db.session.commit()
     print('Tables seeded')
 
+
 @app.route('/')
 def index():
-    return 'Hello World!'
+    return "Hello World!"
